@@ -1,77 +1,65 @@
 class Owner
+  # code goes here
+  attr_reader :name, :species
 
   @@all = []
 
- attr_accessor :name, :pets, :dog, :cat
- attr_reader :species
-
-# def name
-   #@name = name
- #end
-
- def initialize(species)
-   @species = species
-   @@all << self
-   @pets = {:dogs => [], :cats => []}
- end
-
-def say_species
-  puts "I am a #{@species}."
-end
-
-def self.all
-  @@all
-end
-
-def self.count
- @@all.size
-end
-
-def self.reset_all
-  @@all.clear
-end
-
-def buy_cat(name_of_cat)
-  @pets[:cats] << Cat.new(name_of_cat)
-end
-
-def buy_dog(name_of_dog)
-  @pets[:dogs] << Dog.new(name_of_dog)
-end
-
-def walk_dogs
-  @pets.collect do |species, instances| #iterate through collection of pets: species and instances
-    if species == :dogs
-        instances.each do |dog|
-          dog.mood = "Happy"
-      end
-    end
+  def initialize(name)
+    @name = name
+    @species = "human"
+    @@all << self
   end
-end
 
-def feed_cats
-  @pets.collect do |species, instances|
-  if species == :cats
-    instances.each do |cat|
-        cat.mood = "Happy"
-      end
-    end
+  def say_species
+    "I am a #{self.species}."
   end
-end
 
-def sell_pets
-  @pets.collect do |species, instances|
-    instances.each do |pet|
+  def self.all
+    @@all
+  end
+
+  def self.count
+    self.all.count
+  end
+
+  def self.reset_all
+    self.all.clear
+  end
+
+  def cats
+    Cat.all.select{|cat| cat.owner == self}
+  end
+
+  def dogs
+    Dog.all.select{|dog| dog.owner == self}
+  end
+
+  def buy_cat(name)
+    Cat.new(name, self)
+  end
+
+  def buy_dog(name)
+    Dog.new(name, self)
+  end
+
+  def walk_dogs
+    self.dogs.each { |dog| dog.mood = "happy" }
+  end
+
+  def feed_cats
+    self.cats.each { |cat| cat.mood = "happy" }
+  end
+
+  def sell_pets
+    pets = self.dogs + self.cats
+
+    pets.each do |pet|
       pet.mood = "nervous"
+      pet.owner = nil
     end
-    instances.clear
   end
-end
 
-def list_pets
-  num_dogs = @pets[:dogs].size
-  num_cats = @pets[:cats].size
-  return "I have #{num_dogs} dog(s) and #{num_cats} cat(s)."
-end
-
+  def list_pets
+    "I have #{self.dogs.count} dog(s), and #{self.cats.count} cat(s)."
+  end
 end
