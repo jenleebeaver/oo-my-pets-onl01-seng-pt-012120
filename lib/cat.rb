@@ -6,6 +6,7 @@ class Cat
   def initialize(name)
     @name = name
     @mood = "nervous"
+    @owner << self
   end
 
 end
